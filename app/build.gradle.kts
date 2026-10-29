@@ -62,6 +62,9 @@ dependencies {
         // (2) Para icons
         implementation("androidx.compose.material:material-icons-core:1.7.5")
 
+        // (3) Para viewModel
+        implementation("androidx.lifecycle:lifecycle-viewmodel-compose:<versión>")
+
 
     }
 }
