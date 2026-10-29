@@ -1,6 +1,5 @@
 package me.mariahernandez.cristalia
 
-
 import android.app.Application
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -15,10 +14,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
-/**
- * Guarda el reproductor y el estado de la pantalla de inicio.
- * Sobrevive a la rotación del celular, así que el video no se reinicia.
- */
+// Guarda el reproductor y el estado de la pantalla de inicio.
+// Sobrevive a la rotación del celular, así que el video no se reinicia.
+
 class SplashViewModel(app: Application) : AndroidViewModel(app) {
 
     // ¿Ya terminó el video?
@@ -31,6 +29,7 @@ class SplashViewModel(app: Application) : AndroidViewModel(app) {
 
     // Reproductor (se crea una sola vez mientras viva el ViewModel)
     val player: ExoPlayer = ExoPlayer.Builder(app).build().apply {
+
         val uri = "android.resource://${app.packageName}/raw/prueba".toUri()
         setMediaItem(MediaItem.fromUri(uri))
         repeatMode = Player.REPEAT_MODE_OFF

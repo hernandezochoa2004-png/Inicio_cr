@@ -1,12 +1,12 @@
 package me.mariahernandez.cristalia
 
 
-
 import android.content.res.Configuration
 import androidx.annotation.OptIn
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,7 +29,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,8 +37,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color              // (1)
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -53,18 +54,18 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
-import kotlinx.coroutines.delay
-import kotlin.time.Duration.Companion.milliseconds
 
+
+// Colores (1)
 private val Cyan = Color(0xFF00F0FF)
 private val BgDark = Color(0xFF10141C)
 
 @OptIn(UnstableApi::class)
 @Composable
-fun CristaliaSplashScreen(
-    onEnter: () -> Unit,
-    viewModel: SplashViewModel = viewModel()
-) {
+
+
+fun CristaliaSplashScreen(  onEnter: () -> Unit,         viewModel: SplashViewModel = viewModel() ) {
+
     // Estado y reproductor vienen del ViewModel (sobreviven a la rotación)
     val player = viewModel.player
     val videoEnded = viewModel.videoEnded
@@ -86,16 +87,6 @@ fun CristaliaSplashScreen(
         }
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
-    }
-
-    // Si el video ya terminó, fuerza a dibujar el último cuadro en la vista nueva
-    LaunchedEffect(player) {
-        if (viewModel.videoEnded) {
-            delay(300.milliseconds)   // da tiempo a que la vista esté lista
-            player.pause()
-            val total = player.duration
-            if (total > 0) player.seekTo(total - 100)
-        }
     }
 
     // Animaciones de opacidad: 0f = invisible, 1f = visible
@@ -128,7 +119,7 @@ fun CristaliaSplashScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                VideoCard(player = player, size = 180.dp)
+                VideoCard(player = player, size = 180.dp, videoEnded = videoEnded)
                 Spacer(Modifier.width(48.dp))
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     TitleText(alpha = titleAlpha)
@@ -152,7 +143,7 @@ fun CristaliaSplashScreen(
                 Spacer(Modifier.weight(1f))
                 TitleText(alpha = titleAlpha)
                 Spacer(Modifier.height(48.dp))
-                VideoCard(player = player, size = 200.dp)
+                VideoCard(player = player, size = 200.dp, videoEnded = videoEnded)
                 Spacer(Modifier.height(72.dp))
                 EnterButton(
                     onClick = onEnter,
@@ -178,29 +169,42 @@ private fun TitleText(alpha: Float) {
     )
 }
 
-// Video dentro de una tarjeta
+// Tarjeta: video mientras corre, imagen del último cuadro cuando termina
 @OptIn(UnstableApi::class)
 @Composable
-private fun VideoCard(player: ExoPlayer, size: Dp) {
+private fun VideoCard(player: ExoPlayer, size: Dp, videoEnded: Boolean) {
     Surface(
         shape = RoundedCornerShape(12.dp),
         color = Color(0x1A00F0FF),
         border = BorderStroke(1.dp, Color(0x3300F0FF)),
         modifier = Modifier.size(size)
     ) {
-        AndroidView(
-            modifier = Modifier
-                .padding(8.dp)
-                .clip(RoundedCornerShape(4.dp)),
-            factory = { ctx ->
-                PlayerView(ctx).apply {
-                    this.player = player
-                    useController = false
-                    resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-                    setShutterBackgroundColor(android.graphics.Color.BLACK)
+        if (videoEnded) {
+            // Imagen fija: se ve igual aunque rotes o vuelvas a la pantalla
+            Image(
+                painter = painterResource(R.drawable.ultimo_cuadro),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp)
+                    .clip(RoundedCornerShape(4.dp))
+            )
+        } else {
+            AndroidView(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .clip(RoundedCornerShape(4.dp)),
+                factory = { ctx ->
+                    PlayerView(ctx).apply {
+                        this.player = player
+                        useController = false
+                        resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                        setShutterBackgroundColor(android.graphics.Color.BLACK)
+                    }
                 }
-            }
-        )
+            )
+        }
     }
 }
 
