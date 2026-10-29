@@ -64,6 +64,8 @@ private val BgDark = Color(0xFF10141C)
 @Composable
 
 
+
+//                            lambda1                                 lambda2                         entran como parámetros
 fun CristaliaSplashScreen(  onEnter: () -> Unit,         viewModel: SplashViewModel = viewModel() ) {
 
     // Estado y reproductor vienen del ViewModel (sobreviven a la rotación)
@@ -89,7 +91,7 @@ fun CristaliaSplashScreen(  onEnter: () -> Unit,         viewModel: SplashViewMo
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
-    // Animaciones de opacidad: 0f = invisible, 1f = visible
+    // Animaciones de opacidad: 0f = invisible, 1f = visible      TitleAlpha y buttonAlpha se utilizaran más abajo
     val titleAlpha by animateFloatAsState(
         targetValue = if (videoEnded) 1f else 0f,
         animationSpec = tween(700), label = "title"
@@ -165,7 +167,7 @@ private fun TitleText(alpha: Float) {
         color = Color.White,
         fontSize = 32.sp,
         fontWeight = FontWeight.Bold,
-        modifier = Modifier.alpha(alpha)
+        modifier = Modifier.alpha(alpha)  // alpha -> nivel de opacidad que viene de la variable de arriba y se le da los valores de la función
     )
 }
 

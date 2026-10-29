@@ -26,9 +26,12 @@ class MainActivity : ComponentActivity() {
 
             // Se agrega de ultimo
             CristaliaSplashScreen(
+
+                // Lambda que entra como parámetro en CristaliaSplashScreen      (Creo que aqui puedes empezar y unir el inicio con el menu sebas)
                 onEnter = {
                 Toast.makeText(this, "¡Entraste!", Toast.LENGTH_SHORT).show()
                 }
+
             )
         }
     }
