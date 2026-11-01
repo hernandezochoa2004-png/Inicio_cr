@@ -28,6 +28,7 @@ enum class TipoCelda(
     val subtitulo: String,
     val titulo: String,
     val archivoGlb: String,          // ruta dentro de app/src/main/assets/
+    val archivoGlbConteo: String,     // <-- NUEVO: el GLB de la zona amarilla
     val items: List<ItemConteo>,
     val resumen: String,
     val formula: String
@@ -36,6 +37,7 @@ enum class TipoCelda(
         sigla = "SC", subtitulo = "Cúbica Simple",
         titulo = "SC — Cúbica Simple (Simple Cubic)",
         archivoGlb = "models/celdaunitaria/SC_centrada_fix.glb",
+        archivoGlbConteo = "models/celdaunitaria/1atom.glb",   // <-- NUEVO
         items = listOf(
             ItemConteo("1 esfera hace parte de 8 estructuras cristalinas", "1/8 por celda", Paleta.Cian)
         ),
@@ -46,6 +48,7 @@ enum class TipoCelda(
         sigla = "BCC", subtitulo = "Cent. Cuerpo",
         titulo = "BCC — Cúbica Centrada en el Cuerpo (Body-Centered)",
         archivoGlb = "models/celdaunitaria/bcc.glb",
+        archivoGlbConteo = "models/celdaunitaria/1atom.glb",   // <-- NUEVO
         items = listOf(
             ItemConteo("1 esfera hace parte de 8 estructuras cristalinas", "1/8 por celda", Paleta.Cian),
             ItemConteo("1 esfera en el centro pertenece solo a esta celda", "1 por celda", Paleta.Magenta)
@@ -57,6 +60,7 @@ enum class TipoCelda(
         sigla = "FCC", subtitulo = "Cent. Caras",
         titulo = "FCC — Cúbica Centrada en las Caras (Face-Centered)",
         archivoGlb = "models/celdaunitaria/FCC.glb",
+        archivoGlbConteo = "models/celdaunitaria/1atom.glb",   // <-- NUEVO
         items = listOf(
             ItemConteo("1 esfera hace parte de 8 estructuras cristalinas", "1/8 por celda", Paleta.Cian),
             ItemConteo("6 esferas hacen parte de 2 estructuras cristalinas", "1/2 por celda", Paleta.Magenta)
@@ -68,6 +72,7 @@ enum class TipoCelda(
         sigla = "HCP", subtitulo = "Hexagonal",
         titulo = "HCP — Hexagonal Compacta (Hexagonal Close-Packed)",
         archivoGlb = "models/celdaunitaria/hcp.glb",
+        archivoGlbConteo = "models/celdaunitaria/1atom.glb",   // <-- NUEVO
         items = listOf(
             ItemConteo("12 esferas en los vértices del prisma hexagonal", "1/6 por celda", Paleta.Cian),
             ItemConteo("2 esferas en el centro de las bases hexagonales", "1/2 por celda", Paleta.Magenta),

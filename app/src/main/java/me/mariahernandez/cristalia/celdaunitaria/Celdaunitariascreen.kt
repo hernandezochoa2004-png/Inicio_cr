@@ -120,7 +120,10 @@ fun CeldaUnitariaScreen(
                     alturaVisor = 260.dp,
                     onDescargar = { viewModel.onDescargarClick(tipo.archivoGlb) }
                 )
-                SeccionConteo(tipo)
+                SeccionConteo(
+                    tipo = tipo,
+                    onDescargarConteo = { viewModel.onDescargarClick(tipo.archivoGlbConteo) }
+                )
             }
         }
 
@@ -285,7 +288,10 @@ private fun SelectorTipo(seleccionado: TipoCelda, onSeleccion: (TipoCelda) -> Un
 }
 
 @Composable
-private fun SeccionConteo(tipo: TipoCelda) {
+private fun SeccionConteo(
+    tipo: TipoCelda,
+    onDescargarConteo: () -> Unit      // <-- NUEVO parámetro
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -321,9 +327,17 @@ private fun SeccionConteo(tipo: TipoCelda) {
             }
         }
 
+        // ===== NUEVO: la zona amarilla (GLB + botón de descarga) =====
+        TarjetaVisor(
+            titulo = null,
+            archivoGlb = tipo.archivoGlbConteo,
+            alturaVisor = 160.dp,
+            onDescargar = onDescargarConteo
+        )
+
         TarjetaInfo(icono = false, texto = tipo.resumen)
 
-        // Fórmula final: "entonces: ..." con scroll horizontal por si es larga
+        // Fórmula final: "entonces: ..."
         Column(
             modifier = Modifier
                 .fillMaxWidth()
