@@ -43,6 +43,12 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.res.painterResource
 import me.mariahernandez.cristalia.R
 
+// Nuevo
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.unit.TextUnit
+
 @Composable
 fun CeldaUnitariaScreen(
     onVolver: () -> Unit,
@@ -290,7 +296,7 @@ private fun SelectorTipo(seleccionado: TipoCelda, onSeleccion: (TipoCelda) -> Un
 @Composable
 private fun SeccionConteo(
     tipo: TipoCelda,
-    onDescargarConteo: () -> Unit      // <-- NUEVO parámetro
+    onDescargarConteo: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -327,7 +333,7 @@ private fun SeccionConteo(
             }
         }
 
-        // ===== NUEVO: la zona amarilla (GLB + botón de descarga) =====
+        // GLB de la zona amarilla + botón de descarga
         TarjetaVisor(
             titulo = null,
             archivoGlb = tipo.archivoGlbConteo,
@@ -337,23 +343,119 @@ private fun SeccionConteo(
 
         TarjetaInfo(icono = false, texto = tipo.resumen)
 
-        // Fórmula final: "entonces: ..."
-        Column(
+        // Fórmula dibujada (fracción, tachado y resultado)
+        FormulaVisual(tipo)
+    }
+}
+
+@Composable
+private fun FormulaVisual(tipo: TipoCelda) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .border(1.dp, Paleta.Cian.copy(alpha = 0.4f), RoundedCornerShape(12.dp))
+            .padding(12.dp)
+    ) {
+        Text("entonces:", color = Paleta.TextoSecundario, fontFamily = FontFamily.Monospace, fontSize = 12.sp)
+        Spacer(Modifier.height(8.dp))
+
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(12.dp))
-                .border(1.dp, Paleta.Cian.copy(alpha = 0.4f), RoundedCornerShape(12.dp))
-                .padding(12.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .background(Color.Black.copy(alpha = 0.35f))
+                .horizontalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            Text("entonces:", color = Paleta.TextoSecundario, fontFamily = FontFamily.Monospace, fontSize = 12.sp)
-            Spacer(Modifier.height(6.dp))
-            Text(
-                tipo.formula,
-                color = Color.White,
-                fontFamily = FontFamily.Monospace,
-                fontSize = 14.sp,
-                modifier = Modifier.horizontalScroll(rememberScrollState())
-            )
+            tipo.terminos.forEachIndexed { i, termino ->
+                if (i > 0) SimboloFormula("+")
+                TerminoVisual(termino)
+            }
+            SimboloFormula("=")
+            ResultadoAtomos(tipo.total)
         }
+    }
+}
+
+@Composable
+private fun TerminoVisual(t: TerminoFormula) {
+    // Se tachan los números que se cancelan: 8 × 1/8, 2 × 1/2...
+    val cancelado = t.denominador != 1 && t.cantidad == t.denominador
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        NumeroFormula(t.cantidad, tachado = cancelado)
+        SimboloFormula("×")
+        if (t.denominador == 1) {
+            NumeroFormula(t.numerador, tachado = false)
+        } else {
+            Fraccion(t.numerador, t.denominador, denominadorTachado = cancelado)
+        }
+    }
+}
+
+@Composable
+private fun Fraccion(numerador: Int, denominador: Int, denominadorTachado: Boolean) {
+    Column(
+        modifier = Modifier.width(IntrinsicSize.Max),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        NumeroFormula(numerador, tachado = false, tamano = 18.sp)
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .height(2.dp)
+                .background(Color.White)
+        )
+        NumeroFormula(denominador, tachado = denominadorTachado, tamano = 18.sp)
+    }
+}
+
+@Composable
+private fun NumeroFormula(valor: Int, tachado: Boolean, tamano: TextUnit = 22.sp) {
+    Text(
+        text = valor.toString(),
+        color = Color.White,
+        fontSize = tamano,
+        fontWeight = FontWeight.Bold,
+        modifier = if (tachado) {
+            Modifier.drawWithContent {
+                drawContent()
+                // Raya diagonal cian sobre el número
+                drawLine(
+                    color = Paleta.Cian,
+                    start = Offset(0f, size.height),
+                    end = Offset(size.width, 0f),
+                    strokeWidth = 4f,
+                    cap = StrokeCap.Round
+                )
+            }
+        } else Modifier
+    )
+}
+
+@Composable
+private fun SimboloFormula(simbolo: String) {
+    Text(simbolo, color = Paleta.TextoSecundario, fontSize = 20.sp)
+}
+
+@Composable
+private fun ResultadoAtomos(total: Int) {
+    Row(
+        modifier = Modifier
+            .clip(RoundedCornerShape(8.dp))
+            .background(Paleta.Cian.copy(alpha = 0.12f))
+            .border(1.dp, Paleta.Cian.copy(alpha = 0.6f), RoundedCornerShape(8.dp))
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
+    ) {
+        Text(total.toString(), color = Paleta.Cian, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+        Text(if (total == 1) "átomo" else "átomos", color = Color.White, fontSize = 18.sp)
     }
 }

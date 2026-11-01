@@ -22,6 +22,13 @@ data class ItemConteo(
     val color: Color
 )
 
+/** Un término de la fórmula: cantidad × (numerador/denominador). Ej: 8 × 1/8 */
+data class TerminoFormula(
+    val cantidad: Int,
+    val numerador: Int,
+    val denominador: Int
+)
+
 /** Cada tipo de celda con TODO lo que cambia en la sección inferior. */
 enum class TipoCelda(
     val sigla: String,
@@ -31,55 +38,64 @@ enum class TipoCelda(
     val archivoGlbConteo: String,     // <-- NUEVO: el GLB de la zona amarilla
     val items: List<ItemConteo>,
     val resumen: String,
-    val formula: String
+    val terminos: List<TerminoFormula>,
+    val total: Int
 ) {
     SC(
         sigla = "SC", subtitulo = "Cúbica Simple",
         titulo = "SC — Cúbica Simple (Simple Cubic)",
         archivoGlb = "models/celdaunitaria/SC_centrada_fix.glb",
-        archivoGlbConteo = "models/celdaunitaria/1atom.glb",   // <-- NUEVO
+        archivoGlbConteo = "models/celdaunitaria/1atom_centrado.glb",   // <-- NUEVO
         items = listOf(
             ItemConteo("1 esfera hace parte de 8 estructuras cristalinas", "1/8 por celda", Paleta.Cian)
         ),
         resumen = "SC: 8 vértices (1/8 cada uno)",
-        formula = "( 8 vértices × 1/8 ) = 1"
+        // SC:  8 × 1/8 = 1
+        terminos = listOf(TerminoFormula(8, 1, 8)),
+        total = 1
     ),
     BCC(
         sigla = "BCC", subtitulo = "Cent. Cuerpo",
         titulo = "BCC — Cúbica Centrada en el Cuerpo (Body-Centered)",
-        archivoGlb = "models/celdaunitaria/bcc.glb",
-        archivoGlbConteo = "models/celdaunitaria/1atom.glb",   // <-- NUEVO
+        archivoGlb = "models/celdaunitaria/bcc_centrado.glb",
+        archivoGlbConteo = "models/celdaunitaria/2atoms_centrado.glb",   // <-- NUEVO
         items = listOf(
             ItemConteo("1 esfera hace parte de 8 estructuras cristalinas", "1/8 por celda", Paleta.Cian),
             ItemConteo("1 esfera en el centro pertenece solo a esta celda", "1 por celda", Paleta.Magenta)
         ),
         resumen = "BCC: 8 vértices (1/8 cada uno) + 1 átomo central",
-        formula = "( 8 vértices × 1/8 ) + ( 1 centro × 1 ) = 1 + 1 = 2"
+        // BCC: 8 × 1/8 + 1 × 1 = 2
+        terminos = listOf(TerminoFormula(8, 1, 8), TerminoFormula(1, 1, 1)),
+        total = 2
     ),
     FCC(
         sigla = "FCC", subtitulo = "Cent. Caras",
         titulo = "FCC — Cúbica Centrada en las Caras (Face-Centered)",
         archivoGlb = "models/celdaunitaria/FCC.glb",
-        archivoGlbConteo = "models/celdaunitaria/1atom.glb",   // <-- NUEVO
+        archivoGlbConteo = "models/celdaunitaria/4atoms_centrado.glb",   // <-- NUEVO
         items = listOf(
             ItemConteo("1 esfera hace parte de 8 estructuras cristalinas", "1/8 por celda", Paleta.Cian),
             ItemConteo("6 esferas hacen parte de 2 estructuras cristalinas", "1/2 por celda", Paleta.Magenta)
         ),
         resumen = "FCC: 8 vértices (1/8) + 6 caras (1/2 cada una)",
-        formula = "( 8 vértices × 1/8 ) + ( 6 caras × 1/2 ) = 1 + 3 = 4"
+        // FCC: 8 × 1/8 + 6 × 1/2 = 4
+        terminos = listOf(TerminoFormula(8, 1, 8), TerminoFormula(6, 1, 2)),
+        total = 4
     ),
     HCP(
         sigla = "HCP", subtitulo = "Hexagonal",
         titulo = "HCP — Hexagonal Compacta (Hexagonal Close-Packed)",
         archivoGlb = "models/celdaunitaria/hcp.glb",
-        archivoGlbConteo = "models/celdaunitaria/1atom.glb",   // <-- NUEVO
+        archivoGlbConteo = "models/celdaunitaria/6atoms_centrado.glb",   // <-- NUEVO
         items = listOf(
             ItemConteo("12 esferas en los vértices del prisma hexagonal", "1/6 por celda", Paleta.Cian),
             ItemConteo("2 esferas en el centro de las bases hexagonales", "1/2 por celda", Paleta.Magenta),
             ItemConteo("3 esferas dentro del prisma", "1 por celda", Paleta.Violeta)
         ),
         resumen = "HCP: 12 vértices (1/6) + 2 bases (1/2) + 3 internas (1)",
-        formula = "( 12 × 1/6 ) + ( 2 × 1/2 ) + ( 3 × 1 ) = 2 + 1 + 3 = 6"
+        // HCP: 12 × 1/6 + 2 × 1/2 + 3 × 1 = 6
+        terminos = listOf(TerminoFormula(12, 1, 6), TerminoFormula(2, 1, 2), TerminoFormula(3, 1, 1)),
+        total = 6
     );
 }
 
