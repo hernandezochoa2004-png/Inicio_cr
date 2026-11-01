@@ -1,4 +1,4 @@
-package me.mariahernandez.cristalia
+package me.mariahernandez.cristalia.inicio
 
 
 import android.content.res.Configuration
@@ -54,7 +54,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
-
+import me.mariahernandez.cristalia.R
 
 // Colores (1)
 private val Cyan = Color(0xFF00F0FF)

@@ -1,4 +1,4 @@
-package me.mariahernandez.cristalia
+package me.mariahernandez.cristalia.inicio
 
 import android.app.Application
 import androidx.compose.runtime.getValue
