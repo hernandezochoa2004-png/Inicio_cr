@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "me.mariahernandez.cristalia"
-        minSdk = 28
+        minSdk = 29                                     // Se cambió de 28 a 29
         targetSdk = 37
         versionCode = 1
         versionName = "1.0"
@@ -55,15 +55,30 @@ dependencies {
 
     dependencies {
 
-        // (1) JetPack Media3
+        // 1. INICIO
+
+        // JetPack Media3
         implementation("androidx.media3:media3-exoplayer:1.4.1")
         implementation("androidx.media3:media3-ui:1.4.1")
 
-        // (2) Para icons
+        // Para icons
         implementation("androidx.compose.material:material-icons-core:1.7.5")
 
-        // (3) Para viewModel
+        // Para viewModel
         implementation("androidx.lifecycle:lifecycle-viewmodel-compose:<versión>")
+
+        // 2. MENÚ
+
+
+        // 3. CELDA UNITARIA
+        implementation("io.github.sceneview:sceneview:2.3.3")
+        implementation("androidx.navigation:navigation-compose:2.8.0")
+        implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0")
+        implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.0")
+        implementation("androidx.compose.material:material-icons-extended")
+
+
+
 
 
     }
